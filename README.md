@@ -48,6 +48,8 @@ Date: Fri, 06 Nov 2026 12:00:00 GMT
   - [Shell quoting tips](#shell-quoting-tips)
   - [Roadmap](#roadmap)
   - [Project layout](#project-layout)
+  - [Releasing](#releasing)
+  - [License](#license)
 
 ---
 
@@ -64,7 +66,15 @@ Date: Fri, 06 Nov 2026 12:00:00 GMT
 
 ## Install
 
-With Go 1.21 or newer:
+**Prebuilt binaries.** Download the archive for your platform from the [Releases page](https://github.com/koodeau/req/releases). Builds are published for Linux, macOS and Windows on amd64 and arm64, along with a `checksums.txt` file.
+
+```sh
+# example: Linux amd64 (replace the version and platform with yours)
+curl -L https://github.com/koodeau/req/releases/download/v0.1.0/req_0.1.0_linux_amd64.tar.gz | tar xz
+sudo mv req /usr/local/bin/
+```
+
+**With Go 1.21 or newer:**
 
 ```sh
 go install github.com/koodeau/req@latest
@@ -323,7 +333,7 @@ Your shell sees the command before `req` does, and some characters mean somethin
 - [ ] Response assertions for scripting (status, JSON paths)
 - [ ] Shell completions
 - [ ] Unit tests for the path parser and body builder
-- [ ] Release binaries
+- [x] Release binaries (GitHub Actions + GoReleaser)
 
 Ideas and bug reports are welcome on the [issue tracker](https://github.com/koodeau/req/issues).
 
@@ -339,6 +349,21 @@ Ideas and bug reports are welcome on the [issue tracker](https://github.com/kood
 ├── go.mod
 └── README.md
 ```
+
+## Releasing
+
+Releases are built by GitHub Actions with [GoReleaser](https://goreleaser.com) whenever a version tag is pushed:
+
+```sh
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+The workflow cross-compiles the binaries, packages them (`.tar.gz`, or `.zip` on Windows), generates `checksums.txt` and a changelog from the commit messages, and publishes everything to the Releases page. Tags with a suffix such as `v0.2.0-rc1` are marked as pre-releases. The version string is injected at build time, so `req --version` reports the tag.
+
+## License
+
+This project has MIT license.
 
 ---
 

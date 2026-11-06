@@ -3,15 +3,30 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
 )
 
-const (
-	version = "0.1.0"
-	repoURL = "https://github.com/koodeau/req"
-)
+const repoURL = "https://github.com/koodeau/req"
+
+// version is set at release time:
+//
+//	go build -ldflags "-X main.version=1.2.3"
+//
+// Builds made with `go install ...@vX.Y.Z` pick it up from the module
+// info instead; anything else reports "dev".
+var version = "dev"
+
+func init() {
+	if version != "dev" {
+		return
+	}
+	if bi, ok := debug.ReadBuildInfo(); ok && bi.Main.Version != "" && bi.Main.Version != "(devel)" {
+		version = strings.TrimPrefix(bi.Main.Version, "v")
+	}
+}
 
 type config struct {
 	method      string
